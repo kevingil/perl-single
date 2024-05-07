@@ -63,7 +63,7 @@ sub layout {
 </head>
 <body>
     <div>
-    <h1 class="text-3xl font-bold">
+    <h1 class="mx-auto max-w-2xl text-3xl font-bold">
         Test App
     </h1>  
     <div id="content">
@@ -84,22 +84,25 @@ sub homepage {
     # Fetch tasks from the database
     $tasks = $dbh->selectall_arrayref('SELECT * FROM tasks', { Slice => {} });
 
-    my $html = '<form hx-post="/add" hx-target="#content" hx-swap="innerHTML" method="post">
-        <input type="text" name="description" placeholder="New task" required>
-        <button type="submit">Add</button>
+    my $html = '<div class="p-2 mx-auto max-w-2xl">';
+
+    $html .= '<form hx-post="/add" hx-target="#content" hx-swap="innerHTML"
+    class="p-2 flex gap-2 mb-4" method="post">
+        <input type="text" name="description" placeholder="New task" class="bg-gray/10 w-full px-2 border-2 rounded" required>
+        <button type="submit" class="rounded border p-1 px-2 hover:bg-black/10">Add</button>
     </form>';
 
     $html .= '<ul>';
     foreach my $task (@$tasks) {
-        $html .= '<li>';
+        $html .= '<li class="p-2 flex gap-2">';
         $html .= sprintf('<input type="checkbox" hx-post="/toggle/%d" hx-target="#content" hx-swap="innerHTML" %s>',
             $task->{id}, $task->{completed} ? 'checked' : '');
-        $html .= sprintf('<span>%s</span>', $task->{description});
-        $html .= sprintf('<button hx-post="/delete/%d" hx-target="#content" hx-swap="innerHTML">Delete</button>',
+        $html .= sprintf('<span class="w-full">%s</span>', $task->{description});
+        $html .= sprintf('<button hx-post="/delete/%d" hx-target="#content" hx-swap="innerHTML" class="">Delete</button>',
             $task->{id});
         $html .= '</li>';
     }
-    $html .= '</ul>';
+    $html .= '</ul> </div>';
 
     return $html;
 }
